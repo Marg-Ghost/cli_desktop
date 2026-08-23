@@ -11,16 +11,19 @@
 #define MAX_FOLDERS 60
 #define MAX_NAME 256
 
-char** get_folder(int *count);
+char **get_folder(int *count);
+
 void init_env(struct termios *orig);
+
 void deactivate_env(struct termios *orig);
+
 int init_desktop(char **folders, int count);
 
 int main() {
     struct termios orig;
     init_env(&orig);
     int count = 0;
-    char** folder = get_folder(&count);
+    char **folder = get_folder(&count);
     init_desktop(folder, count);
 
     deactivate_env(&orig);
@@ -33,26 +36,41 @@ int main() {
     return 0;
 }
 
-char** get_folder(int *count) {
+char **get_folder(int *count) {
     DIR *dir = opendir(".");
     if (!dir) return NULL;
 
-    //reserviere Speicher
-    char **folders = malloc(MAX_FOLDERS * sizeof(char*));
+    char **folders = malloc(MAX_FOLDERS * sizeof(char *));
     *count = 0;
 
     struct dirent *entry;
+
+    // 1. nur norm
     while ((entry = readdir(dir)) != NULL && *count < MAX_FOLDERS) {
-        // Nur Ordner filtern (ohne "." und "..")
         if (entry->d_type == DT_DIR) {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
-                continue;
-            }
+            if (entry->d_name[0] == '.') continue; // Versteckte Ordner skippen
+
             folders[*count] = malloc(MAX_NAME);
             strncpy(folders[*count], entry->d_name, MAX_NAME - 1);
             (*count)++;
         }
     }
+
+    // 2. nur hiddne
+    rewinddir(dir); // Verzeichnis-Pointer zurück auf Anfang setzen
+    while ((entry = readdir(dir)) != NULL && *count < MAX_FOLDERS) {
+        if (entry->d_type == DT_DIR) {
+            // '.' und '..' ignorieren
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
+
+            if (entry->d_name[0] == '.') {
+                folders[*count] = malloc(MAX_NAME);
+                strncpy(folders[*count], entry->d_name, MAX_NAME - 1);
+                (*count)++;
+            }
+        }
+    }
+
     closedir(dir);
     return folders;
 }
@@ -64,6 +82,7 @@ void init_env(struct termios *orig) {
     raw.c_lflag &= ~(ECHO | ICANON);
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 }
+
 void deactivate_env(struct termios *orig) {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, orig);
 }
@@ -90,6 +109,11 @@ int init_desktop(char **folders, int count) {
         }
         //confirm
         if (c == '\n' || c == '\r') {
+            if (selected_folder >= 0) {
+                char command[512];
+                snprintf(command, sizeof(command), "bash open.sh \"%s\"", folders[selected_folder]);
+                system(command);
+            }
             break;
         }
         //movement
@@ -100,11 +124,12 @@ int init_desktop(char **folders, int count) {
             char key_queue[2];
             if (read(STDIN_FILENO, &key_queue[0], 1) > 0 && read(STDIN_FILENO, &key_queue[1], 1) > 0) {
                 if (key_queue[0] == '[') {
-                    if (key_queue[1] == 'A') { //==up
+                    if (key_queue[1] == 'A') {
+                        //==up
                         //weil: count % count ist wieder 0 und somit scroll == endless
                         //aber: 1 % count ist immernoch 1
                         selected_folder = (selected_folder - 1 + count) % count;
-                    }else if (key_queue[1] == 'B') {
+                    } else if (key_queue[1] == 'B') {
                         selected_folder = (selected_folder + 1) % count;
                     }
                 }
