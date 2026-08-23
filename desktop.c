@@ -17,18 +17,18 @@ void init_env(struct termios *orig);
 
 void deactivate_env(struct termios *orig);
 
-int init_desktop(char **folders, int count, int *selected);
+int init_desktop(char **folders, int count);
 
 int main() {
     struct termios orig;
     init_env(&orig);
     int count = 0;
     char **folder = get_folder(&count);
-    int selected = 0;
-    init_desktop(folder, count, &selected);
+    int selected = init_desktop(folder, count);
 
     deactivate_env(&orig);
 
+    fprintf(stderr, "\033[H\033[J");
     if (selected >= 0) {
         printf("%s\n", folder[selected]);
     }
@@ -93,16 +93,16 @@ void deactivate_env(struct termios *orig) {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, orig);
 }
 
-int init_desktop(char **folders, int count, int *selected) {
-    int selected_folder = *selected;
+int init_desktop(char **folders, int count) {
+    int selected_folder = 0;
     while (1) {
-        printf("\033[H\033[J");
-        printf("=== Select a Folder (up/down Arrows, enter to confirm, q to quit) ===\n\n");
+        fprintf(stderr,"\033[H\033[J");
+        fprintf(stderr,"=== Select a Folder (up/down Arrows, enter to confirm, q to quit) ===\n\n");
         for (int i = 0; i < count; i++) {
             if (i == selected_folder) {
-                printf(" > \033[7m %s \033[0m\n", folders[i]);
+                fprintf(stderr," > \033[7m %s \033[0m\n", folders[i]);
             } else {
-                printf("   %s\n", folders[i]);
+                fprintf(stderr,"   %s\n", folders[i]);
             }
         }
 

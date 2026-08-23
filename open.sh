@@ -1,6 +1,6 @@
-SELECTED_DIR=$(./cli_desktop)
+#!/bin/bash
+TARGET=$(./cli_desktop)
 
-if [ -n "$SELECTED_DIR" ]; then
-      cd "$SELECTED_DIR"
-      exec $SHELL
+if [ -n "$TARGET" ]; then
+    cd "$TARGET"
 fi
