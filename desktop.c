@@ -92,7 +92,7 @@ char **get_folder_point(int *count) {
     while ((entry = readdir(dir)) != NULL && *count < MAX_FOLDERS) {
         if (entry->d_type == DT_DIR) {
             // '.' und '..' ignorieren
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
+            if (strcmp(entry->d_name, ".") == 0) continue;
 
             if (entry->d_name[0] == '.') {
                 folders[*count] = malloc(MAX_NAME);
@@ -207,7 +207,7 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
                         //==up
                         //weil: count % count ist wieder 0 und somit scroll == endless
                         //aber: 1 % count ist immernoch 1
-                        selected_folder = (selected_folder - 1 + count) % total_count;
+                        selected_folder = (selected_folder - 1 + total_count) % total_count;
                     } else if (key_queue[1] == 'B') {
                         selected_folder = (selected_folder + 1) % total_count;
                     }

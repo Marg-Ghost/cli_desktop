@@ -1,8 +1,16 @@
+Bash
 #!/bin/bash
-read -r TYPE TARGET <<< $(./cli_desktop)
+while true; do
+    TARGET=$(~/cli_desktop) #execute
+    # Beenden, wenn 'q' ge
+    if [ -z "$TARGET" ]; then
+        break
+    fi
 
-if [ "$TYPE" = "DIR" ]; then
-    cd "$TARGET"
-elif [ "$TYPE" = "FILE" ]; then
-    nano "$TARGET"
-fi
+
+    if [ -d "$TARGET" ]; then
+        cd "$TARGET"
+    elif [ -f "$TARGET" ]; then
+        nano "$TARGET"
+    fi
+done
