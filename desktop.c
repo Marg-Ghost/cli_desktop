@@ -38,11 +38,12 @@ int main() {
     fprintf(stderr, "\033[H\033[J");
     if (selected >= 0) {
         if (selected < count) {
-            printf("DIR %s\n", folder[selected]);
+            printf("%s\n", folder[selected]);
         } else if (selected < count + count_point) {
-            printf("DIR %s\n", folder_point[selected - count]);
+            printf("%s\n", folder_point[selected - count]);
         } else if (selected < count + count_point + count_file) {
-            printf("FILE %s\n", file[selected - count - count_point]);
+            // Hier KEIN '/' anhängen!
+            printf("%s\n", file[selected - count - count_point]);
         }
     }
 

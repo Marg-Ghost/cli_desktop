@@ -1,16 +1,19 @@
-Bash
 #!/bin/bash
 while true; do
-    TARGET=$(~/cli_desktop) #execute
-    # Beenden, wenn 'q' ge
+    # Ausgabe holen und Trimmen
+    TARGET=$(~/cli_desktop)
+
+    # Abbrechen bei Leerzeile / q
     if [ -z "$TARGET" ]; then
         break
     fi
 
-
     if [ -d "$TARGET" ]; then
-        cd "$TARGET"
+        cd "$TARGET" || break
     elif [ -f "$TARGET" ]; then
-        nano "$TARGET"
+        # /dev/tty zwingt nano, das echte Terminal als Input/Output zu nutzen
+        nano "$TARGET" < /dev/tty > /dev/tty
+    else
+        break
     fi
 done
