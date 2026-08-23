@@ -110,9 +110,7 @@ int init_desktop(char **folders, int count) {
         //confirm
         if (c == '\n' || c == '\r') {
             if (selected_folder >= 0) {
-                char command[512];
-                snprintf(command, sizeof(command), "bash open.sh \"%s\"", folders[selected_folder]);
-                system(command);
+                chdir(folders[selected_folder]);
             }
             break;
         }
