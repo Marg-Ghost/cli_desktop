@@ -151,12 +151,10 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
         int current_idx = 0;
         fprintf(stderr,"\033[H\033[J");
         fprintf(stderr,"||======================================================||\n");
-        fprintf(stderr,"||======================================================||\n");
         fprintf(stderr,"||===========          ____________          ===========||\n");
         fprintf(stderr,"||===========         |HHHHHHHHHHHH|         ===========||\n");
         fprintf(stderr,"||===========       |HJ############EH|       ===========||\n");
-        fprintf(stderr,"||===========      |HJ##############EH|      ===========||\n");
-        fprintf(stderr,"||===========     |HJ###--#######--###EH|    ===========||\n");
+        fprintf(stderr,"||===========      |HJ##--#######--##EH|     ===========||\n");
         fprintf(stderr,"||===========     |HJ##----#####----##EH|    ===========||\n");
         fprintf(stderr,"||===========    |HJ####--#######--####EH|   ===========||\n");
         fprintf(stderr,"||===========    |HH###################EH|   ===========||\n");
@@ -167,10 +165,9 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
         fprintf(stderr,"||===========    |H H|HHHHH|HHHHH  |HHHHH|   ===========||\n");
         fprintf(stderr,"||===========    |H   |HHH| |HHHH  |HH| H|   ===========||\n");
         fprintf(stderr,"||===========    ||    H|    |HH   |H        ===========||\n");
-        fprintf(stderr,"||======================================================||\n");
         fprintf(stderr,"||==========   __    .  .    __     __   ___  ==========||\n");
         fprintf(stderr,"||==========  / _    |__|   |  |    \\     |   ==========||\n");
-        fprintf(stderr,"||==========  \\__|   |  |   |__|   __/    |   ===========||\n");
+        fprintf(stderr,"||==========  \\__|   |  |   |__|   __/    |   ==========||\n");
         fprintf(stderr,"||======================================================||\n");
         fprintf(stderr,"|| Syntax : up/down Arrows, enter to confirm, q to quit ||\n");
         fprintf(stderr,"||======================================================||\n\n");
