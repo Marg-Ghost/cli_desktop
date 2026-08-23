@@ -38,12 +38,14 @@ int main() {
     fprintf(stderr, "\033[H\033[J");
     if (selected >= 0) {
         if (selected < count) {
+            // 1. Ordner
             printf("%s\n", folder[selected]);
-        } else if (selected < count + count_point) {
-            printf("%s\n", folder_point[selected - count]);
-        } else if (selected < count + count_point + count_file) {
-            // Hier KEIN '/' anhängen!
-            printf("%s\n", file[selected - count - count_point]);
+        } else if (selected < count + count_file) {
+            // 2. Dateien
+            printf("%s\n", file[selected - count]);
+        } else if (selected < count + count_file + count_point) {
+            // 3. . Ordner
+            printf("%s\n", folder_point[selected - count - count_file]);
         }
     }
 
@@ -148,8 +150,32 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
     while (1) {
         int current_idx = 0;
         fprintf(stderr,"\033[H\033[J");
-        fprintf(stderr,"=== Select a Folder (up/down Arrows, enter to confirm, q to quit) ===\n\n");
+        fprintf(stderr,"||======================================================||\n");
+        fprintf(stderr,"||======================================================||\n");
+        fprintf(stderr,"||===========          ____________          ===========||\n");
+        fprintf(stderr,"||===========         |HHHHHHHHHHHH|         ===========||\n");
+        fprintf(stderr,"||===========       |HJ############EH|       ===========||\n");
+        fprintf(stderr,"||===========      |HJ##############EH|      ===========||\n");
+        fprintf(stderr,"||===========     |HJ###--#######--###EH|    ===========||\n");
+        fprintf(stderr,"||===========     |HJ##----#####----##EH|    ===========||\n");
+        fprintf(stderr,"||===========    |HJ####--#######--####EH|   ===========||\n");
+        fprintf(stderr,"||===========    |HH###################EH|   ===========||\n");
+        fprintf(stderr,"||===========    |HJ##---------------##EH|   ===========||\n");
+        fprintf(stderr,"||===========    |HJ###-------------###EH|   ===========||\n");
+        fprintf(stderr,"||===========    |HJ#####----------####EH|   ===========||\n");
+        fprintf(stderr,"||===========    |HH###################EH|   ===========||\n");
+        fprintf(stderr,"||===========    |H H|HHHHH|HHHHH  |HHHHH|   ===========||\n");
+        fprintf(stderr,"||===========    |H   |HHH| |HHHH  |HH| H|   ===========||\n");
+        fprintf(stderr,"||===========    ||    H|    |HH   |H        ===========||\n");
+        fprintf(stderr,"||======================================================||\n");
+        fprintf(stderr,"||==========   __    .  .    __     __   ___  ==========||\n");
+        fprintf(stderr,"||==========  / _    |__|   |  |    \\     |   ==========||\n");
+        fprintf(stderr,"||==========  \\__|   |  |   |__|   __/    |   ===========||\n");
+        fprintf(stderr,"||======================================================||\n");
+        fprintf(stderr,"|| Syntax : up/down Arrows, enter to confirm, q to quit ||\n");
+        fprintf(stderr,"||======================================================||\n\n");
         // 1. Normale Ordner
+        if (count > 0) fprintf(stderr, "| Folder |============================\n");
         for (int i = 0; i < count; i++, current_idx++) {
             if (current_idx == selected_folder) {
                 fprintf(stderr, " > \033[7m %s/ \033[0m\n", folders[i]);
@@ -158,27 +184,23 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
             }
         }
 
-        // Trennlinie 1
-        if (count_point > 0) fprintf(stderr, "============================\n");
-
-        // 2. Versteckte Ordner
-        for (int i = 0; i < count_point; i++, current_idx++) {
-            if (current_idx == selected_folder) {
-                fprintf(stderr, " > \033[7m %s/ \033[0m\n", folder_point[i]);
-            } else {
-                fprintf(stderr, "   %s/\n", folder_point[i]);
-            }
-        }
-
-        // Trennlinie 2
-        if (count_file > 0) fprintf(stderr, "============================\n");
-
-        // 3. Dateien
+        // 2. Dateien
+        if (count_file > 0) fprintf(stderr, "| File |============================\n");
         for (int i = 0; i < count_file; i++, current_idx++) {
             if (current_idx == selected_folder) {
                 fprintf(stderr, " > \033[7m %s \033[0m\n", file[i]);
             } else {
                 fprintf(stderr, "   %s\n", file[i]);
+            }
+        }
+
+        // 3.
+        if (count_point > 0) fprintf(stderr, "| .Folder |============================\n");
+        for (int i = 0; i < count_point; i++, current_idx++) {
+            if (current_idx == selected_folder) {
+                fprintf(stderr, " > \033[7m %s/ \033[0m\n", folder_point[i]);
+            } else {
+                fprintf(stderr, "   %s/\n", folder_point[i]);
             }
         }
 
