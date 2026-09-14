@@ -158,8 +158,7 @@ void deactivate_env(struct termios *orig) {
 }
 
 void init_resource_root(void) {
-    char exe_path[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", exe_path, sizeof(exe_path) - 1);
+    ssize_t len = readlink("/proc/self/exe", exe_path, sizeof(exe_path) - 1); //path current programm
     if (len == -1) {
         strcpy(resource_root, ".");
         return;
@@ -188,11 +187,11 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
         int current_idx = 0;
         fprintf(stderr,"\033[H\033[J");
         if (light_desktop == 1) {
-            print_file ("ressources/Ghost.txt");
+            print_file ("/home/marg_ghost/settings/desktop/ressources/Ghost.txt");
         }else if (light_desktop == 2) {
-            print_file ("ressources/Geist.txt");
+            print_file ("/home/marg_ghost/settings/desktop/ressources/Geist.txt");
         }else if (light_desktop == 0) {
-            print_file ("ressources/text.txt");
+            print_file ("/home/marg_ghost/settings/desktop/ressources/text.txt");
         }
         // 1. Normale Ordner
         if (count > 0) fprintf(stderr, "| Folder |============================\n");
@@ -244,7 +243,7 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
         }
         while (help == 1) {
             fprintf(stderr,"\033[H\033[J");
-            print_file ("ressources/help.txt");
+            print_file ("/home/marg_ghost/settings/desktop/ressources/help.txt");
             char c;
             if (read(STDIN_FILENO, &c, 1) <= 0) break;
             if (c == '1') {
