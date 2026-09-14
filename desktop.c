@@ -167,6 +167,8 @@ void init_resource_root(void) {
     exe_path[len] = '\0';
     strncpy(resource_root, dirname(exe_path), PATH_MAX - 1);
 }
+int* get_state();
+void save_state(int light_desktop, int current_editor);
 
 //actual main interaction point
 int init_desktop(char **folders,char **folder_point,char **file, int count, int count_point, int count_file, char *action_out, char *editor_out) {
@@ -175,11 +177,11 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
     if (total_count == 0) return -1;
 
     int help = 0;
-
-    int light_desktop = 1;
+    int* state = get_state();
+    int light_desktop = state[0];
     int total_destktops = 3;
 
-    int current_editor = 0;
+    int current_editor = state[1];
     int all_editor = 2;
     char *editorlist[] = {"nano", "vim"};
 
@@ -254,9 +256,11 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
         //switch desktop
         if (c == '2') {
             light_desktop = (light_desktop + 1) % total_destktops;
+            save_state(light_desktop, current_editor);
         }
         if (c == '3') {
             current_editor = (current_editor + 1) % all_editor;
+            save_state(light_desktop, current_editor);
         }
 
         if (c == 'x' || c == 'X') {
@@ -300,4 +304,22 @@ void print_file(const char *filepath) {
         fclose(file);
     }
     chdir(cwd);
+}
+int* get_state() {
+    static int state_buf[2];
+    // Defaults
+    state_buf[0] = 1;
+    state_buf[1] = 0;
+    FILE *f = fopen("/home/marg_ghost/settings/desktop/state.txt", "r");
+    if (f) {
+        fscanf(f, "%d %d", &state_buf[0], &state_buf[1]);
+        fclose(f);
+    }
+    return state_buf;
+}
+void save_state(int light_desktop, int current_editor) {
+    FILE *f = fopen("/home/marg_ghost/settings/desktop/state.txt", "w");
+    if (!f) return;
+    fprintf(f, "%d %d\n", light_desktop, current_editor);
+    fclose(f);
 }
