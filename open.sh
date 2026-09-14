@@ -1,19 +1,23 @@
 #!/bin/bash
 while true; do
-    # Ausgabe holen und Trimmen
-    TARGET=$(~/cli_desktop)
+    OUTPUT=$(~/cli_desktop)
 
-    # Abbrechen bei Leerzeile / q
-    if [ -z "$TARGET" ]; then
+    ACTION=$(sed -n '1p' <<< "$OUTPUT")
+    EDITOR_CHOICE=$(sed -n '2p' <<< "$OUTPUT")
+    TARGET=$(sed -n '3p' <<< "$OUTPUT")
+
+    if [ "$ACTION" = "QUIT" ] || [ -z "$ACTION" ]; then
         break
+    fi
+
+    if [ "$ACTION" = "D" ]; then
+        rm -ri -- "$TARGET"
+        continue
     fi
 
     if [ -d "$TARGET" ]; then
         cd "$TARGET" || break
     elif [ -f "$TARGET" ]; then
-        # /dev/tty zwingt nano, das echte Terminal als Input/Output zu nutzen
-        nano "$TARGET" < /dev/tty > /dev/tty
-    else
-        break
+        "$EDITOR_CHOICE" "$TARGET" < /dev/tty > /dev/tty
     fi
 done
