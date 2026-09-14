@@ -8,9 +8,12 @@
 || -> Down   : Arrow down              ||
 || -> Quit   : Q                       ||
 || -> Help   : 1                       ||
+||-------------------------------------||
 ||--|Interaction                       ||
 || -> Select : Enter                   ||
 || -> Delete : X                       ||
+|| -> Add    : A                       ||
+||-------------------------------------||
 ||--|Settings                          ||
 || -> Desktop Version : 2              ||
 || -> Switch Editor   : 3              ||

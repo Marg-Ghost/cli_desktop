@@ -25,7 +25,7 @@ void init_env(struct termios *orig);
 
 void deactivate_env(struct termios *orig);
 
-int init_desktop(char **folders,char **folder_point,char **file, int count, int count_point, int count_file, char *action_out, char *editor_out);
+int init_desktop(char **folders,char **folder_point,char **file, int count, int count_point, int count_file, char *action_out, char *editor_out, char *newname_out);
 
 int main() {
     init_resource_root();
@@ -40,13 +40,16 @@ int main() {
     //interactions
     char action = 0; // 0/r | D/del | Q/quit
     char editor_out[16] = "nano";
-    int selected = init_desktop(folder,folder_point,file, count, count_point, count_file, &action, editor_out);
+    char newname[100] = "";
+    int selected = init_desktop(folder,folder_point,file, count, count_point, count_file, &action, editor_out, newname);
 
     deactivate_env(&orig);
     fprintf(stderr, "\033[H\033[J");
 
     const char *path = NULL;
-    if (selected >= 0) {
+    if (action == 'A') {
+        path = newname;
+    } else if (selected >= 0) {
         if (selected < count) {
             // 1. Ordner
             path = folder[selected];
@@ -208,7 +211,7 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
 
         // 2. Dateien
         if (count_file > 0) fprintf(stderr, "| File |============================\n");
-        if (count_file > 0) fprintf(stderr, "Editor : \033[7m %s/ \033[0m\n", editorlist[current_editor] );
+        if (count_file > 0) fprintf(stderr, "Editor : \033[7m %s \033[0m\n", editorlist[current_editor] );
         for (int i = 0; i < count_file; i++, current_idx++) {
             if (current_idx == selected_folder) {
                 fprintf(stderr, " > \033[7m %s \033[0m\n", file[i]);
@@ -265,6 +268,22 @@ int init_desktop(char **folders,char **folder_point,char **file, int count, int 
 
         if (c == 'x' || c == 'X') {
             *action_out = 'D';
+            break;
+        }
+        if (c == 'a'|| c == 'A') {
+            *action_out = 'A';
+
+            struct termios temp;
+            tcgetattr(STDIN_FILENO, &temp);
+            temp.c_lflag |= (ECHO | ICANON);
+            tcsetattr(STDIN_FILENO, TCSAFLUSH, &temp);
+            char message[100] = "Enter file name: ";
+            fprintf(stderr, "\033[7m %s \033[0m\n", message);
+            fgets(newname_out, 100, stdin);
+            newname_out[strcspn(newname_out, "\n")] = '\0';
+
+            temp.c_lflag &= ~(ECHO | ICANON);
+            tcsetattr(STDIN_FILENO, TCSAFLUSH, &temp);
             break;
         }
 

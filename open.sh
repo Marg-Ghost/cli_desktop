@@ -14,6 +14,10 @@ while true; do
         rm -ri -- "$TARGET"
         continue
     fi
+    if [ "$ACTION" = "A" ]; then
+            touch "$TARGET"
+            continue
+    fi
 
     if [ -d "$TARGET" ]; then
         cd "$TARGET" || break
