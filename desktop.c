@@ -158,6 +158,7 @@ void deactivate_env(struct termios *orig) {
 }
 
 void init_resource_root(void) {
+    char exe_path[PATH_MAX];
     ssize_t len = readlink("/proc/self/exe", exe_path, sizeof(exe_path) - 1); //path current programm
     if (len == -1) {
         strcpy(resource_root, ".");
