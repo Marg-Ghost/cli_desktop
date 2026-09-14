@@ -174,7 +174,7 @@ int* get_state();
 void save_state(int light_desktop, int current_editor);
 
 //actual main interaction point
-int init_desktop(char **folders,char **folder_point,char **file, int count, int count_point, int count_file, char *action_out, char *editor_out) {
+int init_desktop(char **folders,char **folder_point,char **file, int count, int count_point, int count_file, char *action_out, char *editor_out, char *newname_out) {
     int selected_folder = 0;
     int total_count = count + count_point + count_file;
     if (total_count == 0) return -1;
